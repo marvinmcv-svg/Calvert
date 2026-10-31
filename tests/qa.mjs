@@ -22,41 +22,36 @@ const WIDTHS = [390, 768, 1440];
 const problems = [];
 const browser = await chromium.launch();
 
-for (const lang of ["en", "es"]) {
-  for (const w of WIDTHS) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, reducedMotion: "reduce" });
-    const page = await ctx.newPage();
-    for (const p of PATHS) {
-      const url = `${BASE}/${lang}${p}`;
-      const errs = [];
-      page.removeAllListeners("console");
-      page.removeAllListeners("pageerror");
-      page.on("console", (m) => m.type() === "error" && !/404/.test(m.text()) && errs.push(m.text()));
-      page.on("pageerror", (e) => errs.push(String(e)));
-      const res = await page.goto(url, { waitUntil: "networkidle" });
-      const expect404 = p.includes("does-not-exist");
-      if (!res || (res.status() !== 200 && !(expect404 && res.status() === 404))) problems.push(`${url} status ${res?.status()}`);
-      const info = await page.evaluate(async () => {
-        for (let y = 0; y < document.body.scrollHeight; y += 700) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 40)); }
-        window.scrollTo(0, 0);
-        await new Promise((r) => setTimeout(r, 300));
-        const imgs = [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.currentSrc || i.src);
-        return {
-          h1: document.querySelectorAll("h1").length,
-          lang: document.documentElement.lang,
-          hscroll: document.documentElement.scrollWidth > window.innerWidth + 1,
-          broken: imgs,
-        };
-      });
-      if (info.h1 !== 1) problems.push(`${url} @${w}: ${info.h1} h1 elements`);
-      if (info.lang !== lang) problems.push(`${url}: html lang=${info.lang}`);
-      if (info.hscroll) problems.push(`${url} @${w}: horizontal scroll`);
-      if (info.broken.length) problems.push(`${url} @${w}: broken images ${info.broken.join(", ")}`);
-      if (errs.length) problems.push(`${url} @${w}: console ${errs.slice(0, 2).join(" | ")}`);
-    }
-    await ctx.close();
+async function checkRun(lang, w) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  for (const p of PATHS) {
+    const url = `${BASE}/${lang}${p}`;
+    const errs = [];
+    page.removeAllListeners("console");
+    page.removeAllListeners("pageerror");
+    page.on("console", (m) => m.type() === "error" && !/404/.test(m.text()) && errs.push(m.text()));
+    page.on("pageerror", (e) => errs.push(String(e)));
+    const res = await page.goto(url, { waitUntil: "load" });
+    const expect404 = p.includes("does-not-exist");
+    if (!res || (res.status() !== 200 && !(expect404 && res.status() === 404))) problems.push(`${url} status ${res?.status()}`);
+    const info = await page.evaluate(async () => {
+      for (let y = 0; y < document.body.scrollHeight; y += 900) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 15)); }
+      window.scrollTo(0, 0);
+      await new Promise((r) => setTimeout(r, 400));
+      const imgs = [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.currentSrc || i.src);
+      return { h1: document.querySelectorAll("h1").length, lang: document.documentElement.lang, hscroll: document.documentElement.scrollWidth > window.innerWidth + 1, broken: imgs };
+    });
+    if (info.h1 !== 1) problems.push(`${url} @${w}: ${info.h1} h1 elements`);
+    if (info.lang !== lang) problems.push(`${url}: html lang=${info.lang}`);
+    if (info.hscroll) problems.push(`${url} @${w}: horizontal scroll`);
+    if (info.broken.length) problems.push(`${url} @${w}: broken images ${info.broken.join(", ")}`);
+    if (errs.length) problems.push(`${url} @${w}: console ${errs.slice(0, 2).join(" | ")}`);
   }
+  await ctx.close();
+  console.log(`checked ${lang} @${w}`);
 }
+await Promise.all(["en", "es"].flatMap((lang) => WIDTHS.map((w) => checkRun(lang, w))));
 
 // Inquiry API
 const ok = { type: "inquiry", parentName: "QA Parent", email: "qa@example.com", childGrade: "KG4", preferredLanguage: "es", consent: true, website: "", lang: "es" };
@@ -99,11 +94,15 @@ if (process.env.ADMIN_USERNAME) {
   await page.click("button");
   await page.waitForURL(`${BASE}/admin`);
   const res = await page.evaluate(async () => {
-    const put = await fetch("/api/admin/content", { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: "home.copy", value: { ...(await (await fetch("/api/admin/content")).json()).overrides["home.copy"] } }) });
-    return put.status;
+    const h = { "content-type": "application/json" };
+    const bad = await fetch("/api/admin/content", { method: "PUT", headers: h, body: JSON.stringify({ id: "home.copy", value: {} }) });
+    const good = await fetch("/api/admin/content", { method: "PUT", headers: h, body: JSON.stringify({ id: "events", value: [] }) });
+    const reset = await fetch("/api/admin/content", { method: "DELETE", headers: h, body: JSON.stringify({ id: "events" }) });
+    return [bad.status, good.status, reset.status].join(",");
   });
-  if (res !== 400 && res !== 200) problems.push(`admin put -> ${res}`);
+  if (res !== "400,200,200") problems.push(`admin bad/save/reset -> ${res}`);
   await page.click("text=Inquiries");
+  await page.waitForURL(`${BASE}/admin/inquiries`);
   if (!(await page.locator("text=Browser Parent").first().isVisible())) problems.push("admin: inquiry not listed");
   await ctx.close();
 }

@@ -15,7 +15,6 @@ type Props = { params: Promise<{ lang: string; division: string }> };
 export function generateStaticParams() {
   return LANGS.flatMap((lang) => DIVISIONS.map((d) => ({ lang, division: d.slug })));
 }
-export const dynamicParams = false;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, division } = await params;

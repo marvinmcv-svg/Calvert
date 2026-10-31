@@ -11,11 +11,29 @@ export const dynamic = "force-dynamic";
 const Put = z.object({ id: z.string(), value: z.unknown() });
 const Del = z.object({ id: z.string() });
 
-/** Same top-level shape as the default: an array stays an array, an object keeps its keys. */
-function sameShape(a: unknown, b: unknown) {
-  if (Array.isArray(a)) return Array.isArray(b);
-  if (a && typeof a === "object") return !!b && typeof b === "object" && !Array.isArray(b);
-  return typeof a === typeof b;
+/**
+ * The edited value must keep the default's structure all the way down: arrays stay arrays
+ * (every item shaped like the default's first item), objects keep exactly their keys, and
+ * leaves keep their type. Optional keys that appear on only some default items are allowed.
+ */
+function sameShape(def: unknown, val: unknown, optional = new Set<string>()): boolean {
+  if (Array.isArray(def)) {
+    if (!Array.isArray(val)) return false;
+    if (def.length === 0) return true;
+    const objs = def.filter((d) => d && typeof d === "object" && !Array.isArray(d)) as Record<string, unknown>[];
+    const allKeys = new Set(objs.flatMap((o) => Object.keys(o)));
+    const opt = new Set([...allKeys].filter((k) => objs.some((o) => !(k in o))));
+    const template = objs.length ? Object.fromEntries([...allKeys].map((k) => [k, objs.find((o) => k in o)![k]])) : def[0];
+    return val.every((v) => sameShape(template, v, opt));
+  }
+  if (def && typeof def === "object") {
+    if (!val || typeof val !== "object" || Array.isArray(val)) return false;
+    const d = def as Record<string, unknown>;
+    const v = val as Record<string, unknown>;
+    if (Object.keys(v).some((k) => !(k in d))) return false;
+    return Object.keys(d).every((k) => (k in v ? sameShape(d[k], v[k]) : optional.has(k)));
+  }
+  return typeof def === typeof val;
 }
 
 export async function GET() {
