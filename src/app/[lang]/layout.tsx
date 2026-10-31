@@ -12,6 +12,8 @@ import { Footer } from "@/components/layout/footer";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { MobileCtaBar } from "@/components/layout/mobile-cta";
 import { Kantuta } from "@/components/assistant/kantuta";
+import { ensureContent } from "@/lib/content/server";
+import { ContentHydrator } from "@/lib/content/hydrator";
 
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap", axes: ["opsz", "SOFT"] });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -59,10 +61,12 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function LangLayout({ children, params }: { children: React.ReactNode; params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
+  const overrides = await ensureContent();
   return (
     <html lang={lang} className={`${fraunces.variable} ${inter.variable} ${cinzel.variable}`}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd(lang)) }} />
+        <ContentHydrator overrides={overrides}>
         <LangProvider lang={lang}>
           <a
             href="#main"
@@ -79,6 +83,7 @@ export default async function LangLayout({ children, params }: { children: React
           <CommandPalette />
           <Kantuta />
         </LangProvider>
+        </ContentHydrator>
       </body>
     </html>
   );
