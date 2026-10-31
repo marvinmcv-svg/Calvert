@@ -150,6 +150,8 @@ You are a world-class full-stack product team in one person: strategist, UX rese
 ### 1.10 Digital ecosystem (keep these links working)
 PowerSchool (acslp.powerschool.com) · Online payments (my.acslp.org, payments.acslp.org) · Cougar Hub (cougarhub.acslp.org, a Google Site for families: handbooks, supply lists, newsletters, calendar, emergency guide, Responsible Use Guidelines, chain of command, teacher bios) · new staff site (newstaff.acslp.org) · cafeteria (linktr.ee/calvert2025 and a monthly PDF) · PulsEDU admissions · Strategic Plan 2019–2024 (expired) · School Profile 2025–26 · Important Dates PDF.
 
+**The complete list of family resource links, with their URLs, is in Appendix A.** Every link there must have a home on the new site.
+
 ---
 
 ## 2. AUDIT OF THE CURRENT SITE (what "10x better" has to fix)
@@ -302,6 +304,8 @@ Why teach at ACS, Living in La Paz (altitude, cost of living, and safety, drawn 
 ### 6.7 Parents hub
 One page holding every link families use: PowerSchool, Payments, Menu, Calendar, Handbooks in EN/ES, Supply lists, Newsletters, Emergency Guide, RUG, Chain of Command, Feedback form, and the business office hours.
 
+Build it from **Appendix A**. Group the links the same way (Handbooks, Important Dates, School Profile, Supply Lists, Meet the Team, Newsletters, Important Documents, Student/Parent Handbooks, Social Media, Online Resources), and filter them by audience (All School / Elementary / Secondary) and by language (EN / ES). Each document is a CMS `document` entry with its title, school year, language, audience, URL, and "last reviewed" date, so an out-of-date year shows up automatically.
+
 ### 6.8 Alumni (Cougar Connect)
 A 70-year alumni map, story submissions, an "Update your details" form, a reunion calendar, and featured notable alumni (with consent).
 
@@ -406,3 +410,83 @@ Work in this order and ask before moving to the next step:
 8. End with an **Open questions** list and a **launch checklist**.
 
 **Constraints:** Accuracy over flair. Don't invent anything about students. Keep both languages equal. Mobile first. Fast on Bolivian mobile networks. Accessible. Easy for staff to update.
+
+---
+
+## APPENDIX A. FAMILY RESOURCE LINKS (from the Cougar Hub "Useful Resources" list, supplied by the school)
+
+Every link below must be reachable from the new **Parents hub** (6.7). Where useful, also link it from the matching page: handbooks from the Academics division pages, the School Profile from University Counseling, course descriptions from the Course Catalog, and so on. Keep the URLs exactly as given until each document is moved into the CMS.
+
+### A.1 Handbooks
+- [Student/Parent Handbook 2025-2026 (English)](https://docs.google.com/document/d/1C7tSAlfBT4gaPzjN1iA588i6vy-5tQ716m2fsBdIceE/edit?tab=t.0)
+- [Manual para Estudiantes y Padres 2025-2026 (Español)](https://docs.google.com/document/d/1-Gm-4BaCdOS3ZvKiQAOURbTfDH20sTSypB7qL66a5s8/edit?usp=sharing)
+- [ACS Quick Action Guide](https://drive.google.com/file/d/1u9ZywHF2hea-eg3w8m9TeCxYgEDS1Lt7/view?usp=sharing)
+
+### A.2 Important dates
+- [Important Dates 2025-2026](https://acslp.org/wp-content/uploads/2025/04/2025-2026-Important-Dates.pdf)
+- [Board Dates 2025-2026](https://drive.google.com/file/d/19t24k1AdPJ_dlVDUhQqXa_W3_9gY0fEo/view?usp=sharing)
+
+### A.3 School profile
+- [School Profile 2025-2026](https://drive.google.com/file/d/1h2SkUQzR30wYY0z7EfyqYaeqpyY3r0c7/view?usp=sharing)
+
+### A.4 Supply lists 2025-2026
+- [Elementary Supply List](https://docs.google.com/spreadsheets/d/1Cb9LQQN4W-gE4jHBtnYhUTGS07344rUSQbfiP4qq9Wg/edit#gid=0)
+- [Secondary School Supply List (Grades 6-12)](https://docs.google.com/document/d/1EhPRXdk9AeeKhv59VOZJbdW2JA9zRVLx6i24B13eOhI/edit)
+
+### A.5 Meet the team
+- [Teacher Bios](https://sites.google.com/acslp.org/profiles/acs)
+
+### A.6 Newsletters
+- [Elementary](https://cougarhub.acslp.org/elementary/news)
+- [Secondary](https://cougarhub.acslp.org/secondary/news)
+
+### A.7 Important documents
+- [2019-2024 Strategic Plan](https://drive.google.com/file/d/0B7-p3oIwUoBvcnZrTVF5c0c2TXc1Z1ZjMlpLN2Q3WGl1dDhB/view?usp=sharing)
+- [2019-2024 Plan Estratégico](https://drive.google.com/file/d/0B-E03t2H4hHOMzJmS1hXWlpGOUp0cVk0Z2wtWkE5QkYyQTRz/view?usp=sharing)
+- [Quick Action Emergency Guide](https://drive.google.com/file/d/1u9ZywHF2hea-eg3w8m9TeCxYgEDS1Lt7/view?usp=sharing)
+- [ACS Learning Principles](https://docs.google.com/document/d/1-ED0UJQvmWpO5bQ7VsUguYb5xUHnMsGVDr1vyrfAbUQ/edit)
+- [Reglamento Interno](https://docs.google.com/document/d/1EVdHzbMrvha5WTRYI7b4oNyeX-YQC441TUfnQMAMOuE/edit)
+- [Parent Rep Guide](https://docs.google.com/document/d/1Vi9bZ48CWwEhZ9kykljrJZ8x0BUlmvELgKoLsFakeMQ/edit)
+- [Chain of Command (English)](https://drive.google.com/file/d/0B7-p3oIwUoBvOVdCX1MtanNDZVBYMzJfNmVFSS12ai1pOG9F/view?usp=sharing)
+- [Cadena de Comando (Español)](https://drive.google.com/file/d/0B7-p3oIwUoBvTkdNM1dTbmtXZ1JsOHlJMzNEZ1JiVnNsdTRj/view?usp=sharing)
+- [Parents' Rights/Responsibilities and Communication with the Board](http://www.acslp.org/images/cougar-hub/Parent_Rights-n-Responsabilities.pdf)
+
+### A.8 Student/Parent handbooks
+- [Learning Services Handbook](https://docs.google.com/document/d/1V5GFbbdNxLskbJSSs0c0TnFt9Oeki1RRlrzWA6UXKnI/edit#)
+- [Athletic Handbook](https://docs.google.com/document/d/1cCozM_-LRAgthabtrgoIgLrEkzfuEMO9mIIGXvAR-7k/edit)
+- [Extra-Curricular Handbook (English)](https://docs.google.com/document/d/1JSBxrlXrTlL5cxugQXI7CWm3wiJXn9YPA-fOXtZZnxs/edit?ts=5c34e52e)
+- [Extra-Curricular Handbook (Español)](https://docs.google.com/document/d/1NqBsJVhDbdylb0PhJh-_pvvOxbBEiwblvAiEppLQjVk/edit?ts=5c369b03)
+- [ACS Network Security](https://docs.google.com/document/d/1pomUl26x0dCWfGx4nBAM3bLvUecHBBpysCGXJ5qUhQE/edit#heading=h.4frf8ovx38be)
+- [ACS Responsible Use Guidelines (RUG): Technology](https://docs.google.com/document/d/1tRc5ZMY1dcu7BB8PoU3sp564FMoulrAd5DUNHxYttZo/edit?usp=sharing)
+- [Lineamientos para uso responsable de la tecnología (RUG, Español)](https://docs.google.com/document/d/145eCyMTSwU5_b6eh-39ZYVTB2YmLQC7hyVkK6dEfFCs/edit?usp=sharing)
+- [ACS RUG Acknowledgement Form](https://docs.google.com/document/d/1SzjxByQJkAS-YKd3_Z5ANTEQapxomZLSaFmiKrd_leI/edit)
+
+### A.9 Social media
+- [ACS Website](https://acslp.org/)
+- [ACS on Facebook](https://www.facebook.com/acscalvert/)
+- [ACS Alumni Network (Facebook group)](https://www.facebook.com/groups/2259636874/)
+- [ACS on YouTube](https://www.youtube.com/channel/UCL4_aKpQ6jbwAdgQfKbAzqQ)
+
+### A.10 Online resources
+- **All school**
+  - [PowerSchool](https://acslp.powerschool.com/)
+  - [IXL](https://www.ixl.com/)
+  - [Atlas (curriculum maps, public)](https://acslp-public.rubiconatlas.org/)
+  - [Library Catalog (Follett Destiny)](https://acscalvert.follettdestiny.com/)
+- **Elementary**
+  - [KG3-Grade 5 Course Descriptions](https://docs.google.com/document/d/1RAwbvtcwb4BpBD1TD2xYZZYIDuZQhJnraBVeSaRfHtw/edit)
+  - [Class Dojo](https://www.classdojo.com/)
+- **Secondary**
+  - [Middle School Course Descriptions](https://docs.google.com/document/d/1aBSfsnKHiAWDTmDUYjO7l2Hkmn8dl18Z2-soE6da4d0/edit?ts=5bd0e433)
+  - [High School Course Descriptions](https://docs.google.com/document/d/1_ipWftOZsrxzc8Lex8Qb2eaJvo5GekBx77dNrIbAcn4/edit#)
+
+### A.11 Problems in this list to fix during migration
+1. **Out-of-date years:** the handbooks, important dates, board dates, school profile, and supply lists are labeled **2025-2026**, but the 2026-2027 school year began in August 2026. Ask the school for the 2026-2027 versions. [[CONFIRM]]
+2. **Expired Strategic Plan:** the 2019-2024 plan (EN and ES) has expired. Publish the current plan, or label this one as archived. [[CONFIRM]]
+3. **Duplicate link:** the "ACS Quick Action Guide" and the "Quick Action Emergency Guide" point to the same file. List it once, under Safety.
+4. **Insecure, legacy link:** "Parents' Rights/Responsibilities…" uses `http://` and a legacy `/images/cougar-hub/` path, and the filename contains the misspelling "Responsabilities". Re-upload it to the CMS over HTTPS and add a 301 redirect.
+5. **Missing Spanish versions:** there is no Spanish version of the Learning Services Handbook, Athletic Handbook, Network Security, Parent Rep Guide, Learning Principles, School Profile, supply lists, or course descriptions. There is no English version of the Reglamento Interno. Plan translations so both languages match.
+6. **Old documents:** the Extra-Curricular Handbooks and Middle School Course Descriptions carry `ts=` parameters from 2018-2019, so they may be outdated. Ask owners to review them.
+7. **Google Docs are not a website:** handbooks, course descriptions, and supply lists should become searchable, mobile-friendly CMS pages (with a PDF download) rather than "edit" links into Google Docs. At minimum, change `/edit` links to `/view` or `/preview` so families never land in an editor view.
+8. **Empty bullet:** the source list has an empty item under "Student Parent Handbooks". Remove it.
+9. **Cleanup:** add accents to "Espanol" and "tecnologia", remove the stray space in "Rights/ Responsibilities", and change the `http://www.acslp.org/` website link to HTTPS.
