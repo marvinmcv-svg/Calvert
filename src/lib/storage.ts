@@ -6,11 +6,11 @@ import path from "path";
  * .data/*.json in local development.
  */
 const PREFIX = "acs-calvert";
-const useBlob = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+const blobEnabled = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
 export async function readJson<T>(name: string, fallback: T): Promise<T> {
   try {
-    if (useBlob()) {
+    if (blobEnabled()) {
       const { list } = await import("@vercel/blob");
       const { blobs } = await list({ prefix: `${PREFIX}/${name}.json`, limit: 1 });
       if (!blobs[0]) return fallback;
@@ -26,7 +26,7 @@ export async function readJson<T>(name: string, fallback: T): Promise<T> {
 
 export async function writeJson(name: string, data: unknown): Promise<void> {
   const body = JSON.stringify(data, null, 2);
-  if (useBlob()) {
+  if (blobEnabled()) {
     const { put } = await import("@vercel/blob");
     await put(`${PREFIX}/${name}.json`, body, {
       access: "public",
