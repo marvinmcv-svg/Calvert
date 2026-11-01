@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { Fraunces, Inter, Cinzel } from "next/font/google";
+import "lenis/dist/lenis.css";
 import "../globals.css";
 import { LANGS, isLang, type Lang } from "@/lib/i18n-types";
 import { LangProvider } from "@/lib/lang-context";
@@ -14,6 +15,7 @@ import { MobileCtaBar } from "@/components/layout/mobile-cta";
 import { Kantuta } from "@/components/assistant/kantuta";
 import { ensureContent } from "@/lib/content/server";
 import { ContentHydrator } from "@/lib/content/hydrator";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
 
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap", axes: ["opsz", "SOFT"] });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -74,6 +76,7 @@ export default async function LangLayout({ children, params }: { children: React
           >
             {UI.skip[lang]}
           </a>
+          <SmoothScroll />
           <Header />
           <main id="main" tabIndex={-1} className="outline-none">
             {children}

@@ -22,7 +22,8 @@ import { Txt } from "@/components/ui/txt";
 import { Container, Kicker, Section } from "@/components/ui/section";
 import { Star, Swoosh } from "@/components/brand/logo";
 import { SocialIcon } from "@/components/brand/social-icons";
-import { Words } from "./motion";
+import { Words, ScrubText } from "./motion";
+import { Starfield } from "@/components/motion/starfield";
 
 function Head({
   kicker,
@@ -60,6 +61,61 @@ function Head({
         </LLink>
       )}
     </div>
+  );
+}
+
+/* 1b. Manifesto: a statement read as you scroll */
+export function Manifesto() {
+  const { tr, lang } = useLang();
+  const pill = (k: "campusLawn" | "elementaryIpad" | "graduatesTrio") => (
+    <Image src={MEDIA[k].src} alt="" fill sizes="6rem" className="object-cover" />
+  );
+  const segments =
+    lang === "es"
+      ? [
+          { t: "En 1955, un grupo de padres de familia en La Paz" },
+          { pill: pill("campusLawn"), label: MEDIA.campusLawn.alt.es },
+          { t: "fundó el colegio que querían para sus hijos. Setenta años después, esa promesa sigue en pie: una educación americana, en inglés" },
+          { pill: pill("elementaryIpad"), label: MEDIA.elementaryIpad.alt.es },
+          { t: "con raíces en Bolivia, donde cada estudiante es conocido" },
+          { pill: pill("graduatesTrio"), label: MEDIA.graduatesTrio.alt.es },
+          { t: "y cada puerta sigue abierta." },
+        ]
+      : [
+          { t: "In 1955, a group of parents in La Paz" },
+          { pill: pill("campusLawn"), label: MEDIA.campusLawn.alt.en },
+          { t: "built the school they wanted for their children. Seventy years on, that promise holds: an American education, taught in English" },
+          { pill: pill("elementaryIpad"), label: MEDIA.elementaryIpad.alt.en },
+          { t: "rooted in Bolivia, where every learner is known" },
+          { pill: pill("graduatesTrio"), label: MEDIA.graduatesTrio.alt.en },
+          { t: "and every door stays open." },
+        ];
+  return (
+    <Section tone="paper" labelledBy="manifesto-title" className="overflow-hidden">
+      <Container>
+        <div className="grid gap-10 lg:grid-cols-[14rem_1fr] lg:gap-16">
+          <div className="lg:pt-4">
+            <Kicker>
+              <span id="manifesto-title">{tr({ en: "Our promise", es: "Nuestra promesa" })}</span>
+            </Kicker>
+            <p data-rise className="mt-6 hidden font-display text-[7rem] leading-none tracking-[-0.05em] text-forest-900/8 lg:block">1955</p>
+          </div>
+          <div>
+            <ScrubText
+              segments={segments}
+              className="font-display text-[clamp(1.9rem,4.4vw,4.1rem)] leading-[1.12] tracking-[-0.025em] text-forest-900 text-pretty"
+            />
+            <div data-rise className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-forest-800/10 pt-6">
+              <p className="text-sm text-mist">{tr({ en: "American Cooperative School · La Paz, Bolivia", es: "American Cooperative School · La Paz, Bolivia" })}</p>
+              <LLink href="/about/history" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-forest-800 link-gold">
+                {tr({ en: "Seventy years of history", es: "Setenta años de historia" })}
+                <ArrowUpRight aria-hidden className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </LLink>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </Section>
   );
 }
 
@@ -112,10 +168,13 @@ export function Advantage() {
         <ul className="mt-14 grid auto-rows-[19rem] gap-4 sm:grid-cols-2 lg:grid-cols-12">
           {ADVANTAGE.map((t, i) => (
             <li key={t.label.en} data-rise className={cn("sm:col-span-1", spans[i], i === 0 && "sm:col-span-2 sm:row-span-2")}>
-              <LLink href={t.href} className="img-zoom group relative block h-full overflow-hidden rounded-[1.75rem] bg-forest-900">
+              <LLink href={t.href} data-tilt="4" className="card-spot img-zoom group relative block h-full overflow-hidden rounded-[1.75rem] bg-forest-900 shadow-[0_30px_60px_-30px_rgb(0_38_20/0.45)]">
                 <Pic k={t.photo} lang={lang} sizes={i === 0 ? "(min-width: 1024px) 55vw, 100vw" : "(min-width: 1024px) 33vw, 50vw"} className="absolute inset-0" position={t.position} />
                 <div aria-hidden className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-forest-950/92 via-forest-950/45 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-7">
+                <span aria-hidden className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white ring-1 ring-inset ring-white/25 backdrop-blur-md transition-all duration-500 ease-[var(--ease-signature)] group-hover:rotate-45 group-hover:bg-gold-400 group-hover:text-forest-900 group-hover:ring-gold-400">
+                  <ArrowUpRight className="h-5 w-5" />
+                </span>
+                <div className="absolute inset-x-0 bottom-0 p-6 text-white transition-transform duration-700 ease-[var(--ease-signature)] group-hover:-translate-y-1.5 sm:p-7">
                   <p className={cn("font-display leading-none tracking-[-0.03em] tabular-nums", i === 0 ? "text-7xl sm:text-8xl" : "text-5xl")}>{t.figure}</p>
                   <p className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-gold-300">{tr(t.label)}</p>
                   <p className="mt-1.5 max-w-sm text-[0.97rem] leading-snug text-white/90">{tr(t.line)}</p>
@@ -213,12 +272,12 @@ export function Diplomas() {
         <Head id="diploma-title" kicker={HOME.diplomaKicker} title={HOME.diplomaTitle} more={{ label: UI.more, href: "/academics/high-school" }} />
         <div className="relative mt-14 grid gap-5 md:grid-cols-2">
           {cards.map((c, i) => (
+            <div key={c.title.en} data-rise>
             <article
-              key={c.title.en}
-              data-rise
+              data-tilt="3"
               className={cn(
-                "relative overflow-hidden rounded-[1.75rem] p-8 sm:p-10",
-                i === 0 ? "bg-forest-800 text-white" : "bg-white text-forest-900 shadow-soft ring-1 ring-forest-800/8",
+                "card-spot relative h-full overflow-hidden rounded-[1.75rem] p-8 sm:p-10",
+                i === 0 ? "bg-forest-800 text-white" : "spot-light bg-white text-forest-900 shadow-soft ring-1 ring-forest-800/8",
               )}
             >
               <Swoosh className={cn("absolute -right-16 -top-16 h-64 w-64", i === 0 ? "text-white/8" : "text-cougar-500/10")} />
@@ -233,6 +292,7 @@ export function Diplomas() {
                 ))}
               </ul>
             </article>
+            </div>
           ))}
           <span
             aria-hidden
@@ -256,7 +316,7 @@ export function Journey() {
         <ol className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {DIVISIONS.map((d, i) => (
             <li key={d.slug} data-rise>
-              <LLink href={`/academics/${d.slug}`} className="img-zoom group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-paper ring-1 ring-forest-800/8 transition-shadow hover:shadow-xl">
+              <LLink href={`/academics/${d.slug}`} data-tilt="4" className="card-spot spot-light img-zoom group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-paper ring-1 ring-forest-800/8 transition-shadow duration-500 hover:shadow-[0_40px_70px_-35px_rgb(0_38_20/0.45)]">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Pic k={d.photo} lang={lang} sizes="(min-width: 1280px) 22vw, (min-width: 768px) 45vw, 100vw" className="absolute inset-0" />
                   <span className="absolute left-4 top-4 rounded-full bg-paper/90 px-3 py-1 font-display text-sm text-forest-900 backdrop-blur">
@@ -293,7 +353,7 @@ export function Experience() {
         <Head id="experience-title" dark kicker={HOME.experienceKicker} title={HOME.experienceTitle} more={{ label: UI.more, href: "/student-life/campus" }} />
         <div className="mt-14 grid gap-4 lg:grid-cols-3">
           {withPhoto.map((f) => (
-            <LLink key={f.slug} href={`/student-life/campus#${f.slug}`} data-rise className="img-zoom group relative block aspect-[4/5] overflow-hidden rounded-[1.75rem]">
+            <LLink key={f.slug} href={`/student-life/campus#${f.slug}`} data-rise className="card-spot img-zoom group relative block aspect-[4/5] overflow-hidden rounded-[1.75rem]">
               <Pic k={f.photo!} lang={lang} sizes="(min-width: 1024px) 30vw, 100vw" className="absolute inset-0" />
               <div aria-hidden className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-forest-950/92 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-7">
@@ -305,7 +365,7 @@ export function Experience() {
         </div>
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((f) => (
-            <li key={f.slug} data-rise className="rounded-[1.75rem] bg-white/6 p-7 ring-1 ring-inset ring-white/12">
+            <li key={f.slug} data-rise className="card-spot rounded-[1.75rem] bg-gradient-to-b from-white/[0.08] to-white/[0.03] p-7 ring-1 ring-inset ring-white/12 backdrop-blur-sm">
               {f.figure && <p className="font-display text-4xl text-gold-300 tabular-nums">{f.figure}</p>}
               <h3 className="mt-3 font-display text-2xl text-white">{tr(f.name)}</h3>
               <p className="mt-2 text-white/72">{tr(f.text)}</p>
@@ -430,7 +490,7 @@ export function Matriculation() {
         />
         <div className="mt-14 grid gap-4 lg:grid-cols-3">
           {regions.map((r) => (
-            <div key={r.n} data-rise className="rounded-[1.75rem] bg-white/6 p-7 ring-1 ring-inset ring-white/12">
+            <div key={r.n} data-rise className="card-spot rounded-[1.75rem] bg-gradient-to-b from-white/[0.08] to-white/[0.03] p-7 ring-1 ring-inset ring-white/12">
               <p className="font-display text-sm text-gold-300">{r.n}</p>
               <p className="mt-6 font-display text-3xl text-white">{tr(r.name)}</p>
               <p className="mt-1 text-sm text-white/65">{tr({ en: "Class of 2025 admissions", es: "Admisiones de la promoción 2025" })}</p>
@@ -487,7 +547,7 @@ export function Life() {
           </LLink>
           <div className="grid gap-5">
             {rest.slice(0, 2).map((n) => (
-              <LLink key={n.slug} href={`/news/${n.slug}`} data-rise className="img-zoom group grid grid-cols-[8rem_1fr] gap-5 rounded-[1.75rem] bg-white p-3 ring-1 ring-forest-800/8 transition-shadow hover:shadow-xl sm:grid-cols-[11rem_1fr]">
+              <LLink key={n.slug} href={`/news/${n.slug}`} data-rise className="card-spot spot-light img-zoom group grid grid-cols-[8rem_1fr] gap-5 rounded-[1.75rem] bg-white p-3 ring-1 ring-forest-800/8 transition-shadow hover:shadow-xl sm:grid-cols-[11rem_1fr]">
                 <div className="relative overflow-hidden rounded-[1.25rem]">
                   <Pic k={n.photo} lang={lang} sizes="11rem" className="absolute inset-0" />
                 </div>
@@ -593,8 +653,9 @@ export function AdmissionsTeaser() {
 export function FinalCta() {
   const { tr } = useLang();
   return (
-    <Section tone="aurora" labelledBy="final-title" className="overflow-hidden">
-      <Image src={MEDIA.campusLawn.src} alt="" fill sizes="100vw" className="-z-10 object-cover opacity-20 mix-blend-luminosity" />
+    <Section tone="aurora" labelledBy="final-title" className="overflow-hidden py-32 sm:py-48">
+      <Image src={MEDIA.campusLawn.src} alt="" fill sizes="100vw" className="-z-10 object-cover opacity-15 mix-blend-luminosity" />
+      <Starfield className="pointer-events-none absolute inset-0 -z-10" />
       <Container className="text-center">
         <Star className="mx-auto h-7 w-7" />
         <h2 id="final-title" className="mx-auto mt-6 max-w-4xl text-5xl leading-[1] text-balance sm:text-7xl">

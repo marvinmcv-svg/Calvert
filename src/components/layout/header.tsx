@@ -67,11 +67,16 @@ export function Header() {
   const navId = useId();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 32);
+    // On the home page the header stays transparent while the pinned hero is on stage.
+    const onScroll = () => {
+      const hero = document.querySelector<HTMLElement>("[data-hero-stage]");
+      const limit = hero ? Math.max(32, hero.offsetHeight - window.innerHeight * 0.9) : 32;
+      setScrolled(window.scrollY > limit);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   // Close menus on navigation.
   useEffect(() => {

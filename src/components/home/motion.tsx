@@ -16,6 +16,9 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  *  data-parallax="N" drifts against the scroll by ±N%
  *  data-count="99"   counts up from 0 (data-decimals for decimals)
  *  data-bar-grow     bars grow from the baseline in turn (inside data-bars)
+ *  data-scrub-words  words brighten in step with the scroll (use <ScrubText>)
+ *  data-tilt="N"     card tilts up to N degrees toward the pointer
+ *  .card-spot        a soft light follows the pointer across the card
  * Everything runs inside prefers-reduced-motion: no-preference. Nothing is hidden before hydration.
  */
 export function useScrollChoreography(scope: React.RefObject<HTMLElement | null>) {
@@ -31,7 +34,9 @@ export function useScrollChoreography(scope: React.RefObject<HTMLElement | null>
           const words = (el as HTMLElement).querySelectorAll("[data-word]");
           gsap.from(words, {
             yPercent: 115,
-            duration: 1.1,
+            rotate: 5,
+            transformOrigin: "0% 100%",
+            duration: 1.15,
             ease: "expo.out",
             stagger: 0.045,
             scrollTrigger: { trigger: el, start: "top 88%", once: true },
@@ -94,6 +99,25 @@ export function useScrollChoreography(scope: React.RefObject<HTMLElement | null>
           });
         });
 
+        // Reading reveal: words brighten in step with the scroll.
+        q("[data-scrub-words]").forEach((el: Element) => {
+          gsap.fromTo(
+            el.querySelectorAll("[data-sw]"),
+            { opacity: 0.14 },
+            {
+              opacity: 1,
+              ease: "none",
+              stagger: 0.1,
+              scrollTrigger: { trigger: el, start: "top 80%", end: "bottom 45%", scrub: 0.6 },
+            },
+          );
+        });
+
+        // Inline image pills open from a sliver as they enter.
+        q("[data-pill]").forEach((el: Element) => {
+          gsap.from(el, { width: 0, duration: 1.3, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 82%", once: true } });
+        });
+
         q("[data-bars]").forEach((el: Element) => {
           gsap.from(el.querySelectorAll("[data-bar-grow]"), {
             scaleY: 0,
@@ -105,9 +129,90 @@ export function useScrollChoreography(scope: React.RefObject<HTMLElement | null>
           });
         });
       });
-      return () => mm.revert();
+      // Premium cards: a soft tilt toward the pointer and a light that follows it.
+      mm.add("(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)", () => {
+        const root = scope.current;
+        if (!root) return;
+        const cleanups: (() => void)[] = [];
+        root.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
+          const max = Number(el.dataset.tilt) || 5;
+          gsap.set(el, { transformPerspective: 1100 });
+          const rx = gsap.quickTo(el, "rotationX", { duration: 0.7, ease: "power3.out" });
+          const ry = gsap.quickTo(el, "rotationY", { duration: 0.7, ease: "power3.out" });
+          const move = (e: PointerEvent) => {
+            const r = el.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width;
+            const py = (e.clientY - r.top) / r.height;
+            rx((0.5 - py) * max);
+            ry((px - 0.5) * max);
+          };
+          const leave = () => {
+            rx(0);
+            ry(0);
+          };
+          el.addEventListener("pointermove", move);
+          el.addEventListener("pointerleave", leave);
+          cleanups.push(() => {
+            el.removeEventListener("pointermove", move);
+            el.removeEventListener("pointerleave", leave);
+          });
+        });
+        return () => cleanups.forEach((c) => c());
+      });
+
+      // The spotlight works on any fine pointer, motion preference aside (it is light, not movement).
+      const root = scope.current;
+      const spots = root ? Array.from(root.querySelectorAll<HTMLElement>(".card-spot")) : [];
+      const onMove = (e: PointerEvent) => {
+        const el = e.currentTarget as HTMLElement;
+        const r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+        el.style.setProperty("--my", `${e.clientY - r.top}px`);
+      };
+      spots.forEach((el) => el.addEventListener("pointermove", onMove));
+
+      return () => {
+        spots.forEach((el) => el.removeEventListener("pointermove", onMove));
+        mm.revert();
+      };
     },
     { scope },
+  );
+}
+
+/**
+ * A statement read as you scroll. Segments are text or a small inline photo pill.
+ * Words are real text; the dimming is purely visual.
+ */
+export function ScrubText({
+  segments,
+  className,
+}: {
+  segments: ({ t: string } | { pill: React.ReactNode; label: string })[];
+  className?: string;
+}) {
+  return (
+    <p data-scrub-words className={className}>
+      {segments.map((seg, si) =>
+        "t" in seg ? (
+          <Fragment key={si}>
+            {seg.t
+              .split(/(\s+)/)
+              .map((w, wi) => (/^\s+$/.test(w) || w === "" ? w : <span key={wi} data-sw>{w}</span>))}
+          </Fragment>
+        ) : (
+          <span
+            key={si}
+            data-pill
+            role="img"
+            aria-label={seg.label}
+            className="relative mx-[0.12em] inline-block h-[0.78em] w-[1.9em] translate-y-[0.06em] overflow-hidden rounded-full align-baseline ring-1 ring-black/5"
+          >
+            <span className="absolute inset-y-0 left-0 block w-[1.9em]">{seg.pill}</span>
+          </span>
+        ),
+      )}
+    </p>
   );
 }
 

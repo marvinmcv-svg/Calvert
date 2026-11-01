@@ -227,3 +227,44 @@
   }
   .marquee { animation: none !important; }
 }
+
+/* Premium cards: a light that follows the pointer and a hairline that catches it. */
+.card-spot {
+  position: relative;
+  isolation: isolate;
+  --mx: 50%;
+  --my: 0%;
+  --spot: rgb(255 255 255 / 0.14);
+  --spot-ring: rgb(227 208 164 / 0.7);
+}
+.card-spot::before,
+.card-spot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 500ms var(--ease-signature);
+  z-index: 2;
+}
+.card-spot::before {
+  background: radial-gradient(28rem circle at var(--mx) var(--my), var(--spot), transparent 45%);
+}
+.card-spot::after {
+  padding: 1px;
+  background: radial-gradient(18rem circle at var(--mx) var(--my), var(--spot-ring), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.card-spot:hover::before,
+.card-spot:hover::after,
+.card-spot:focus-visible::before,
+.card-spot:focus-visible::after {
+  opacity: 1;
+}
+.card-spot.spot-light {
+  --spot: rgb(51 172 73 / 0.08);
+  --spot-ring: rgb(187 156 90 / 0.75);
+}

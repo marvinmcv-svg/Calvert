@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/home/hero";
 import { Choreo } from "@/components/home/motion";
 import {
+  Manifesto,
   Stats,
   Advantage,
   Safety,
@@ -30,6 +31,7 @@ export default async function HomePage({ params }: LangParams) {
     <>
       <Hero />
       <Choreo>
+        <Manifesto />
         <Stats />
         <Advantage />
         <Safety />
